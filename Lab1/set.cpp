@@ -112,6 +112,8 @@ class set{
     }
 
     bool strictly_balance(){
-        
+        int balance = getBalance(root);
+        if(balance == -2||balance == 2) return false;
+        return true;
     }
 };
