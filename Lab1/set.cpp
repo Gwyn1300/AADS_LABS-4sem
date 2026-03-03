@@ -1,4 +1,5 @@
 #include <vector>
+#include <iostream>
 
 class set{
     struct Node{
@@ -16,10 +17,10 @@ class set{
         if(node->_data == value){
             return true;
         }
-        else if(node->_data >= value&&root->_right!=nullptr){
+        else if(node->_data >= value&&node->_right!=nullptr){
             return serch(node->_right, value);
         }
-        else if(node->_data < value&&root->_left!=nullptr){
+        else if(node->_data < value&&node->_left!=nullptr){
             return serch(node->_left, value);
         }
         return false;
@@ -81,8 +82,54 @@ class set{
             leftRotate(node);
         }
     }
+    
+    Node* getMin(Node* node){
+        if(node==nullptr) return nullptr;
+        if(node->_left == nullptr) return node;
+        return getMin(node->_left);
+    }
 
+    Node* getMax(Node* node){
+        if(node==nullptr) return nullptr;
+        if(node->_right == nullptr) return node;
+        return getMax(node->_right);
+    }
+
+    void del(Node* node, int value){
+        if(node == nullptr) return;
+        else if(value <node->_data) del(node->_left,value);
+        else if(value >node->_data) del(node->_right,value);
+        else{
+            if (node->_left == nullptr||node->_right == nullptr){
+                Node* nodeDel = (node->_left==nullptr)?node->_right:node->_left;
+                node->_data = nodeDel->_data;
+                if(node->_left == nodeDel)node->_left = nullptr;
+                else node->_right = nullptr;
+                delete nodeDel;
+
+            }
+            else{
+                Node*maxlnLeft = getMax(node->_left);
+                node->_data = maxlnLeft->_data;
+                del(node->_left,maxlnLeft->_data);
+            }
+        }
+
+        if(node!=nullptr){
+            updateHieght(node);
+            balance(node);
+        }
+    }
+
+    void del(Node* node){
+        if(node == nullptr) return;
+        if(node->_left == nullptr && node->_right == nullptr) delete node;
+        del(node->_left);
+        del(node->_right);
+    }
+   
     void insert(Node* node, int value){
+        if(node == nullptr) node = new Node(value);
         if(value<node->_data){
             if(node->_left==nullptr){node->_left = new Node(value);}
             else insert(node->_left, value);
@@ -95,9 +142,17 @@ class set{
         balance(node);
     }
 
-    public:
-    set():root(nullptr){};
+    void print(Node* node){
+        if(node == nullptr) return;
+        print(node->_left);
+        std::cout<<node->_data<<' ';
+        print(node->_right);
+    }
 
+    public:
+    set():root(nullptr){}
+
+    ~set(){del(root);}
     
     bool contains(int value){
         return serch(root, value);
@@ -115,5 +170,17 @@ class set{
         int balance = getBalance(root);
         if(balance == -2||balance == 2) return false;
         return true;
+    }
+
+    bool erase(int key){
+        if(serch(root, key)){
+            del(root, key);
+            return true;
+        }
+        return false;
+    }
+
+    void print(){
+        print(root);
     }
 };
