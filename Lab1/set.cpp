@@ -149,6 +149,13 @@ class set{
         print(node->_right);
     }
 
+    void copy(Node* node, Node* other){
+        if(other == nullptr) return;
+        node = new Node(other->_data);
+        copy(node->_left, other->_left);
+        copy(node->_right, other->_right);
+
+    }
     public:
     set():root(nullptr){}
 
@@ -182,5 +189,10 @@ class set{
 
     void print(){
         print(root);
+    }
+
+    set operator=(const set &other){
+        del(root);
+        copy(root, other.root);
     }
 };
