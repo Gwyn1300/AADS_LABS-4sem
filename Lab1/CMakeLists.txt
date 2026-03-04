@@ -2,6 +2,9 @@ cmake_minimum_required(VERSION 3.12)
 
 project("Lab1" CXX)
 
-add_executable("Lab1" 
+add_executable("Lab1"
+"Node.h"
+"Node.cpp"
+"set.h" 
 "set.cpp"
 "function.cpp")

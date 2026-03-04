@@ -1,5 +1,6 @@
-#include "set.cpp"
+#include "set.h"
 #include <vector>
+#include <iostream>
 
 void inSet(const set& a, const Node* node, std::vector<int>& vec) {
     if (node == nullptr) {
