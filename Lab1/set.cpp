@@ -1,6 +1,7 @@
 #include "Node.h"
 #include "set.h"
 #include <iostream>
+#include <vector>
     
 bool set::search(Node*node, int value)const{
     if(node == nullptr) return false;
@@ -92,18 +93,31 @@ Node* set::getMax(Node* node){
     return getMax(node->_right);
 }
 
-void set::del(Node* node, int value){
+void set::del(Node*& node, int value){
     if(node == nullptr) return;
     else if(value <node->_data) del(node->_left,value);
     else if(value >node->_data) del(node->_right,value);
+        
     else{
         if (node->_left == nullptr||node->_right == nullptr){
-            Node* nodeDel = (node->_left==nullptr)?node->_right:node->_left;
-            node->_data = nodeDel->_data;
-            if(node->_left == nodeDel)node->_left = nullptr;
-            else node->_right = nullptr;
-            delete nodeDel;
+            if (node->_left == nullptr && node->_right == nullptr) {
+                delete node;      
+                node = nullptr;
 
+            }
+            else if (node->_left == nullptr) {                
+                Node* temp = node;        
+                node = node->_right;      
+                delete temp;              
+            }
+        
+            
+            else if (node->_right == nullptr) {
+                Node* temp = node;        
+                node = node->_left;       
+                delete temp;              
+            }
+            
         }
         else{
             Node*maxlnLeft = getMax(node->_left);
@@ -118,7 +132,7 @@ void set::del(Node* node, int value){
     }
 }
 
-void set::del(Node* node){
+void set::del(Node*& node){
     if(node == nullptr) return;
     if(node->_left != nullptr && node->_right != nullptr){
         del(node->_left);
@@ -205,6 +219,15 @@ set& set::operator=(const set &other){
     return *this;
 };
 
-Node* set::getRoot()const{
-    return root;
+void set::toVector(Node* node, std::vector<int>& vec) const {
+    if (node == nullptr) return;
+    toVector(node->_left, vec);
+    vec.push_back(node->_data);
+    toVector(node->_right, vec);
+}
+
+std::vector<int> set::toVector() const {
+    std::vector<int> result;
+    toVector(root, result);
+    return result;
 }

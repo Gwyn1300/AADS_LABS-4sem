@@ -1,90 +1,45 @@
-#include "set.h"
-#include <vector>
-#include <iostream>
+#include "function.h"
 
-void inSet(const set& a, const Node* node, std::vector<int>& vec) {
-    if (node == nullptr) {
-        return;
+void inSet(const set& a, const set& b, std::vector<int>& vec) {
+    std::vector<int> bToVec = b.toVector();
+    if (bToVec.size()==0) return;
+    for(int elem:bToVec){
+        if(a.contains(elem)) vec.push_back(elem);
     }
+}
+
+void notInSet(const set& a, const set& b, std::vector<int>& vec) {
+    std::vector<int> bToVec = b.toVector();
+    if (bToVec.size()==0) return;
     
-    if (node != nullptr) {
-        if (a.contains(node->_data)) {
-            vec.push_back(node->_data);
-        }
-        
-        if (node->_left != nullptr) {
-            inSet(a, node->_left, vec);
-        }
-        
-        if (node->_right != nullptr) {
-            inSet(a, node->_right, vec);
-        }
+    for(int elem:bToVec){
+        if(!a.contains(elem)) vec.push_back(elem);
     }
 }
 
 std::vector<int>intersection(const set& a, const set& b){
-    std::vector<int>vec;
-    inSet(a, b.getRoot(), vec);
-    return vec;
-}
-
-void notInSet(const set& a, const Node* node, std::vector<int>& vec) {
-    if (node == nullptr) {
-        return;
-    }
-    
-    if (node != nullptr) {
-        if (!a.contains(node->_data)) {
-            vec.push_back(node->_data);
-        }
-        
-        if (node->_left != nullptr) {  
-            notInSet(a, node->_left, vec);
-        }
-        
-        if (node->_right != nullptr) {
-            notInSet(a, node->_right, vec);
-        }
-    }
-}
-
-
-std::vector<int>unification(const set& a, const set& b){
-    std::vector<int>res;
-    notInSet(a,b.getRoot(),res);
-    notInSet(b,a.getRoot(),res);
-    inSet(a,b.getRoot(), res);
+    std::vector<int> res;
+    inSet(a,b,res);
     return res;
 }
 
+std::vector<int>unification(const set& a, const set& b){
+    std::vector<int>res;
+    notInSet(a,b,res);
+    notInSet(b,a,res);
+    inSet(a,b,res);
+    return res;
+}
 
-int main(){
+void experement(){ 
     std::cout<<"Program start\n";
-    set s = set();
-    s.insert(1);
-    s.insert(2);
-    s.insert(3);
-    s.insert(4);
-    s.insert(5);
-    s.insert(6);
-    s.print();
-    std::cout<<"\n";
-    set s2 = set();
-    s2.insert(4);
-    s2.insert(5);
-    s2.insert(6);
-    s2.insert(7);
-    s2.insert(8);
-    s2.insert(9);
-    s2.insert(10);
-    s2.print();
-    std::cout<<"\n";
-    std::vector vec = unification(s,s2);
-    std::cout << vec.size()<<'\n';
-    for (const auto& i : vec) {
-
-        std::cout << i << " ";
-
-    }
-    return 0;
+    std::vector<double> vecTime3 = vecMaverageTime(1000);
+    std::vector<double> vecTime4 = vecMaverageTime(10000);
+    std::vector<double> vecTime5 = vecMaverageTime(100000);
+    std::vector<double> setTime3 = vecMaverageTime(1000);
+    std::vector<double> setTime4 = vecMaverageTime(10000);
+    std::vector<double> setTime5 = vecMaverageTime(100000);
+    std::vector<std::vector<std::vector<double>>> time = {{vecTime3,vecTime4, vecTime5},{setTime3,setTime4,setTime5}};
+    printTime(time);
+    writeResultToFile(time);
 }

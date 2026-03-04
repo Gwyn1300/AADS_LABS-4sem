@@ -1,5 +1,6 @@
 #pragma once
 #include "Node.h"
+#include <vector>
 
     
 class set{
@@ -25,15 +26,17 @@ class set{
 
     Node* getMax(Node* node);
 
-    void del(Node* node, int value);
+    void del(Node*& node, int value);
 
-    void del(Node* node);
+    void del(Node*& node);
    
     void insert(Node*& node, int value);
 
     void print(Node* node)const;
     
     void copy(Node*& node, const Node* other);
+    
+    void toVector(Node* node, std::vector<int>& vec) const;
     
     public:
 
@@ -55,5 +58,6 @@ class set{
 
     set& operator=(const set &other);
 
-    Node* getRoot()const;
+    std::vector<int> toVector() const;
+    
 };
