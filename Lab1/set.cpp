@@ -1,45 +1,52 @@
 #include <vector>
 #include <iostream>
-
-class set{
-    struct Node{
+struct Node{
     int _data;
     Node* _left;
     Node* _right;
     int _hight;
     Node(): _data(int(0)), _left(nullptr), _right(nullptr), _hight(0){};
-    Node(int data): _data(data), _left(nullptr), _right(nullptr), _hight(1){};
+    Node(int data): _data(data), _left(nullptr), _right(nullptr), _hight(0){};
     };
-
+    
+class set{
     Node* root;
     
-    bool serch(Node*node, int value){
+    bool serch(Node*node, int value)const{
+        if(node == nullptr) return false;
         if(node->_data == value){
             return true;
         }
-        else if(node->_data >= value&&node->_right!=nullptr){
+        else if(value > node->_data&&node->_right!=nullptr){
             return serch(node->_right, value);
         }
-        else if(node->_data < value&&node->_left!=nullptr){
+        else if(value <node->_data&&node->_left!=nullptr){
             return serch(node->_left, value);
         }
         return false;
     };
     
-    int getHeight(Node* node){
+    int getHeight(Node* node)const{
         return (node == nullptr)?-1:node->_hight;
     };
     
     void updateHieght(Node* node){
-        if(node->_left->_hight > node->_right->_hight){
-            node->_hight = node->_left->_hight + 1;
+        if(node->_left==nullptr||node->_right==nullptr){
+            if(node->_left!=nullptr) node->_hight = node->_left->_hight+1;
+            else if(node->_right!=nullptr)node->_hight = node->_right->_hight+1;
+            else node->_hight = 0;
         }
         else{
-            node->_hight = node->_right->_hight + 1;
+            if(node->_left->_hight > node->_right->_hight){
+                node->_hight = node->_left->_hight + 1;
+            }
+            else{
+                node->_hight = node->_right->_hight + 1;
+            }
         }
     };
 
-    int getBalance(Node* node){
+    int getBalance(Node* node)const{
         return (node == nullptr)?0:getHeight(node->_right) - getHeight(node->_left);
     };
 
@@ -123,14 +130,21 @@ class set{
 
     void del(Node* node){
         if(node == nullptr) return;
-        if(node->_left == nullptr && node->_right == nullptr) delete node;
-        del(node->_left);
-        del(node->_right);
+        if(node->_left != nullptr && node->_right != nullptr){
+            del(node->_left);
+            node->_left=nullptr;
+            del(node->_right);
+            node->_right =nullptr;
+        }
+        delete node;
+
     }
    
-    void insert(Node* node, int value){
-        if(node == nullptr) node = new Node(value);
-        if(value<node->_data){
+    void insert(Node*& node, int value){
+        if(node == nullptr) {
+            node = new Node(value);
+        }
+        else if(value<node->_data){
             if(node->_left==nullptr){node->_left = new Node(value);}
             else insert(node->_left, value);
         }
@@ -142,26 +156,34 @@ class set{
         balance(node);
     }
 
-    void print(Node* node){
-        if(node == nullptr) return;
+    void print(Node* node)const{
+        if(node == nullptr){
+            return;
+        }
         print(node->_left);
         std::cout<<node->_data<<' ';
         print(node->_right);
     }
 
-    void copy(Node* node, Node* other){
+    void copy(Node*& node, const Node* other){
         if(other == nullptr) return;
         node = new Node(other->_data);
         copy(node->_left, other->_left);
         copy(node->_right, other->_right);
 
     }
+    
     public:
+
     set():root(nullptr){}
+
+    set(const set&other):root(nullptr){
+        copy(root, other.root);
+    }
 
     ~set(){del(root);}
     
-    bool contains(int value){
+    bool contains(int value)const{
         return serch(root, value);
     }
 
@@ -173,7 +195,7 @@ class set{
         return false;
     }
 
-    bool strictly_balance(){
+    bool strictly_balance()const{
         int balance = getBalance(root);
         if(balance == -2||balance == 2) return false;
         return true;
@@ -191,8 +213,13 @@ class set{
         print(root);
     }
 
-    set operator=(const set &other){
+    set& operator=(const set &other){
         del(root);
         copy(root, other.root);
+        return *this;
+    };
+
+    Node* getRoot()const{
+        return root;
     }
 };
