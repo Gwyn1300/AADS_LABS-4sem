@@ -1,4 +1,5 @@
 #include "function.h"
+#include <iostream>
 
 void inSet(const set& a, const set& b, std::vector<int>& vec) {
     std::vector<int> bToVec = b.toVector();
@@ -42,4 +43,22 @@ void experement(){
     std::vector<std::vector<std::vector<double>>> time = {{vecTime3,vecTime4, vecTime5},{setTime3,setTime4,setTime5}};
     printTime(time);
     writeResultToFile(time);
+}
+
+void chalange(set a, set b){
+    std::cout<<"a: ";
+    a.print();
+    std::cout<<"b: ";
+    b.print();
+    std::vector<int> inter = intersection(a,b);
+    std::cout<<"intersection: ";
+    for(size_t i = 0; i<inter.size();++i){
+        std::cout<<inter[i]<<" ";
+    }
+    std::cout<<"\n";
+    std::cout<<"unification: ";
+    std::vector<int> unific = unification(a,b);
+    for(size_t i = 0; i<unific.size();++i){
+        std::cout<<unific[i]<<" ";
+    }
 }

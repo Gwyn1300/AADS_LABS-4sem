@@ -11,3 +11,5 @@ std::vector<int>intersection(const set& a, const set& b);
 std::vector<int>unification(const set& a, const set& b);
 
 void experement();
+
+void chalange(set a, set b);

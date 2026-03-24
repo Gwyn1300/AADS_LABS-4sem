@@ -211,6 +211,7 @@ bool set::erase(int key){
 
 void set::print(){
     print(root);
+    std::cout<<'\n';
 }
 
 set& set::operator=(const set &other){

@@ -1,32 +1,32 @@
 Set:
 1000 elements:
-	Average filling time: 0.000014200000 seconds
+	Average filling time: 0.000021810000 seconds
 	Average search time: 0.000001000000 seconds
-	Average time to add/remove: 0.000002009000 seconds
+	Average time to add/remove: 0.000002019000 seconds
 
 10000 elements:
-	Average filling time: 0.000164860000 seconds
-	Average search time: 0.000010459000 seconds
-	Average time to add/remove: 0.000019125000 seconds
+	Average filling time: 0.000172340000 seconds
+	Average search time: 0.000010114000 seconds
+	Average time to add/remove: 0.000019245000 seconds
 
 100000 elements:
-	Average filling time: 0.001522810000 seconds
-	Average search time: 0.000095450000 seconds
-	Average time to add/remove: 0.000180435000 seconds
+	Average filling time: 0.001467180000 seconds
+	Average search time: 0.000094949000 seconds
+	Average time to add/remove: 0.000181929000 seconds
 
 Vector:
 1000 elements:
-	Average filling time: 0.000013080000 seconds
-	Average search time: 0.000000980000 seconds
-	Average time to add/remove: 0.000001013000 seconds
+	Average filling time: 0.000013050000 seconds
+	Average search time: 0.000000945000 seconds
+	Average time to add/remove: 0.000001019000 seconds
 
 10000 elements:
-	Average filling time: 0.000125540000 seconds
-	Average search time: 0.000009066000 seconds
-	Average time to add/remove: 0.000018137000 seconds
+	Average filling time: 0.000125920000 seconds
+	Average search time: 0.000009128000 seconds
+	Average time to add/remove: 0.000018363000 seconds
 
 100000 elements:
-	Average filling time: 0.001254430000 seconds
-	Average search time: 0.000095037000 seconds
-	Average time to add/remove: 0.000179933000 seconds
+	Average filling time: 0.001292220000 seconds
+	Average search time: 0.000096391000 seconds
+	Average time to add/remove: 0.000182987000 seconds
 
