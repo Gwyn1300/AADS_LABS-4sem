@@ -2,7 +2,7 @@
 #include "experiment.h"
 
 int main(){
-    experement();
+    //experement();
     set a;
     setRandomNumberFilling(a, 10);
     set b;
