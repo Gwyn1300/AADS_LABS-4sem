@@ -1,4 +1,5 @@
 #include "index.h"
+#include <iostream>
 
 template<typename T>
 class unordered_map{
@@ -33,4 +34,50 @@ public:
             current = next;
         }
     }
+
+    unordered_map<T>& operator=(const unordered_map<T>& other){
+        if (this == &other) {
+        return *this;
+        }
+        index<T>* newIndices = nullptr;
+            if (other._indices != nullptr) {
+        newIndices = new index<T>(*other._indices);
+        }
+
+        _size = other._size;
+        delete _indices;
+        
+        _indices = newIndices;
+
+        return *this;
+    }
+
+
+    void print() const {
+        if (_indices == nullptr) {
+            std::cout << "Empty unordered_map" << std::endl;
+            return;
+        }
+
+        index<T>* current = _indices;
+        size_t count = 0;
+
+        while (current != nullptr) {
+            if (current->_pair != nullptr && current->_pair->_value != nullptr) {
+                std::cout << '[' << count << "] (" 
+                          << current->_pair->_key << ':' 
+                          << *(current->_pair->_value) << ") ";
+            } else if (current->_pair != nullptr) {
+                std::cout << '[' << count << "] (" 
+                          << current->_pair->_key << ":nullptr) ";
+            } else {
+                std::cout << '[' << count << "] (nullptr) ";
+            }
+
+            current = current->_next;
+            count++;
+        }
+        std::cout << std::endl;
+    }
+    
 };
