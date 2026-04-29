@@ -1,20 +1,23 @@
 #pragma once
-template<typename T>
+#include <string>
+
+template<typename K, typename V>
 struct pair{
-    int _key;
-    T* _value;
-    pair<T>* _next;
-    pair():_key(0), _value(nullptr), _next(nullptr){}
-
-    pair(int key, T value): _key(key), _value(new T(value)), _next(nullptr){}
+    K _key;
+    V* _value;
+    pair<K,V>* _next;
     
-    pair(const pair<T>& other):_key(other._key), _value(new T(*other._value)), _next(nullptr){
-        if (other._next != nullptr) {
-            _next = new pair<T>(*other._next);
-        }
-    }
+    pair() : _key(K()), _value(nullptr), _next(nullptr) {}
 
-     ~pair() {
+    pair(const K& key, const V& value) : _key(key), _value(new V(value)), _next(nullptr) {}
+    
+    pair(const pair<K,V>& other) : _key(other._key), _value(new V(*other._value)), _next(nullptr) {
+        if (other._next != nullptr) {
+            _next = new pair<K,V>(*other._next);
+        }
+    }    
+
+    ~pair() {
         delete _value;
         delete _next;
     }

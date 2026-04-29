@@ -13,10 +13,10 @@
     ],
     "buildPresets": [
         {
-            "name": "build-lab1",
-            "displayName": "Build Lab1",
+            "name": "build-lab2",
+            "displayName": "Build Lab2",
             "configurePreset": "debug",
-            "targets": ["Lab1"]
+            "targets": ["Lab2"]
         }
     ]
 }
