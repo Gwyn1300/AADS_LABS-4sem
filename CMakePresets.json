@@ -1,0 +1,22 @@
+{
+    "version": 3,
+    "configurePresets": [
+        {
+            "name": "debug",
+            "displayName": "Debug Build",
+            "generator": "MinGW Makefiles",
+            "binaryDir": "${sourceDir}/build/debug",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug"
+            }
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "build-lab3",
+            "displayName": "Build Lab3",
+            "configurePreset": "debug",
+            "targets": ["Lab3"]
+        }
+    ]
+}
