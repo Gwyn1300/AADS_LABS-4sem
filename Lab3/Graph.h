@@ -99,7 +99,7 @@ private:
     }
 
 public:
-    bool has_vertex(const Vertex& v){
+    bool has_vertex(const Vertex& v)const{
         for (const auto& row : matrix) {
             if (row.empty()) continue;
             if (row.begin()->from == v) {
@@ -111,21 +111,25 @@ public:
 
     bool add_vertex(const Vertex& v){
 
-        if(has_vertex(v)) return false;
-
+        auto vertex_it = vertex_order.begin();
         for (auto& row : matrix) {
-            row.push_back(Edge{vertex_name_from_row(row), v, std::nullopt});
+            Vertex existing_vertex = *vertex_it;
+            row.push_back(Edge{existing_vertex, v, std::nullopt});
+            ++vertex_it;
         }
 
+        // Создаём новую строку
         std::list<Edge> new_row;
 
+        // Добавляем петлю
         new_row.push_back(Edge{v, v, 0.0});
 
+        // Добавляем рёбра во все существующие вершины
         for (const auto& existing : vertex_order) {
             new_row.push_back(Edge{v, existing, std::nullopt});
         }
 
-        matrix.push_back(new_row); 
+        matrix.push_back(new_row);
         vertex_order.push_back(v);
         return true;
     }
@@ -390,49 +394,49 @@ public:
       
     void print() const {
         if (order() == 0) {
-            std::cout << "┌─────────────────────────┐\n"
-                      << "│       ГРАФ ПУСТ         │\n"
-                      << "└─────────────────────────┘" << std::endl;
+            std::cout << "+-----------------------+\n";
+            std::cout << "|       GRAPH EMPTY     |\n";
+            std::cout << "+-----------------------+" << std::endl;
             return;
         }
 
         // Шапка
-        std::cout << "\n  ╔══════════════════════════════════════════════════════════════╗\n";
-        std::cout << "  ║                    ОРИЕНТИРОВАННЫЙ ГРАФ                      ║\n";
-        std::cout << "  ╚══════════════════════════════════════════════════════════════╝\n\n";
+        std::cout << "\n  +--------------------------------------------------+\n";
+        std::cout << "  |                 DIRECTED GRAPH                    |\n";
+        std::cout << "  +--------------------------------------------------+\n\n";
 
         // Статистика
         size_t edge_count = 0;
         for (const auto& from : vertex_order) {
             edge_count += degree(from);
         }
-        std::cout << "  📊 Вершин: " << order() << "  |  Рёбер: " << edge_count << "\n\n";
+        std::cout << "  Vertices: " << order() << "  |  Edges: " << edge_count << "\n\n";
 
         // Список вершин
-        std::cout << "  📍 ВЕРШИНЫ:\n  ";
+        std::cout << "  VERTICES:\n  ";
         for (const auto& v : vertex_order) {
             std::cout << " [" << v << "] ";
         }
         std::cout << "\n\n";
 
         // Рёбра в виде списка
-        std::cout << "  🔗 РЁБРА (ориентированные):\n";
+        std::cout << "  EDGES (directed):\n";
         bool has_edges = false;
         for (const auto& from : vertex_order) {
             for (const auto& edge : edges(from)) {
                 if (edge.distance.has_value()) {
                     has_edges = true;
-                    std::cout << "     " << edge.from << " ──(" << edge.distance.value() 
-                              << ")──→ " << edge.to << "\n";
+                    std::cout << "     " << edge.from << " --(" << edge.distance.value() 
+                              << ")--> " << edge.to << "\n";
                 }
             }
         }
         if (!has_edges) {
-            std::cout << "     (нет рёбер)\n";
+            std::cout << "     (no edges)\n";
         }
 
-        // Матрица смежности (компактная)
-        std::cout << "\n  📋 МАТРИЦА СМЕЖНОСТИ:\n\n";
+        // Матрица смежности
+        std::cout << "\n  ADJACENCY MATRIX:\n\n";
 
         size_t max_len = 0;
         for (const auto& v : vertex_order) {
@@ -443,39 +447,39 @@ public:
         size_t cell_width = std::max(max_len + 2, size_t(6));
 
         // Заголовки столбцов
-        std::cout << "  " << std::string(cell_width - 2, ' ') << " │";
+        std::cout << "  " << std::string(cell_width - 2, ' ') << " |";
         for (const auto& v : vertex_order) {
             std::cout << std::setw(cell_width) << v;
         }
-        std::cout << "\n  " << std::string(cell_width - 2, '─') << "─┼";
+        std::cout << "\n  " << std::string(cell_width - 2, '-') << "-+";
         for (size_t i = 0; i < vertex_order.size(); ++i) {
-            std::cout << std::string(cell_width, '─');
+            std::cout << std::string(cell_width, '-');
         }
         std::cout << "\n";
 
         // Данные
         for (const auto& from : vertex_order) {
-            std::cout << "  " << std::setw(cell_width - 2) << from << " │";
+            std::cout << "  " << std::setw(cell_width - 2) << from << " |";
             for (const auto& to : vertex_order) {
                 auto weight = get_weight(from, to);
                 if (weight.has_value()) {
                     if (from == to && weight.value() == 0) {
-                        std::cout << std::setw(cell_width) << "◉";
+                        std::cout << std::setw(cell_width) << "0";
                     } else {
                         std::cout << std::setw(cell_width) << weight.value();
                     }
                 } else {
-                    std::cout << std::setw(cell_width) << "·";
+                    std::cout << std::setw(cell_width) << ".";
                 }
             }
             std::cout << "\n";
         }
 
-        std::cout << "\n  Условные обозначения:\n";
-        std::cout << "    ◉ — петля (вершина → себя)\n";
-        std::cout << "    число — вес ребра\n";
-        std::cout << "    · — нет ребра\n";
-        std::cout << "    ─(w)─→ — ориентированное ребро с весом w\n";
+        std::cout << "\n  Legend:\n";
+        std::cout << "    number - edge weight\n";
+        std::cout << "    0 - loop (vertex to itself)\n";
+        std::cout << "    . - no edge\n";
+        std::cout << "    --(w)--> - directed edge with weight w\n";
         std::cout << std::endl;
     }
 };
