@@ -4,4 +4,5 @@ project("Lab3" CXX)
 
 add_executable("Lab3"
 "main.cpp"
-"Graph.h")
+"Graph.h"
+"function.h")
