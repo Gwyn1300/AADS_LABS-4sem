@@ -122,13 +122,10 @@ public:
             ++vertex_it;
         }
 
-        // Создаём новую строку
         std::list<Edge> new_row;
 
-        // Добавляем петлю
         new_row.push_back(Edge{v, v, 0.0});
 
-        // Добавляем рёбра во все существующие вершины
         for (const auto& existing : vertex_order) {
             new_row.push_back(Edge{v, existing, std::nullopt});
         }
@@ -224,7 +221,6 @@ public:
     }
 
     bool has_edge(const Edge& e) const {
-        // Проверяем точное совпадение: from, to и вес
         if (!has_vertex(e.from) || !has_vertex(e.to)) {
             return false;
         }
@@ -241,12 +237,11 @@ public:
         return col_it->distance.has_value() && col_it->distance.value() == e.distance;
     }
 
-    //получение всех ребер, выходящих из вершины 
     std::vector<Edge> edges(const Vertex& vertex) const {
         std::vector<Edge> result;
         
         if (!has_vertex(vertex)) {
-            return result;  // или бросить исключение
+            return result;  
         }
 
         size_t idx = get_index(vertex);
@@ -254,7 +249,7 @@ public:
         std::advance(row_it, idx);
 
         for (const auto& edge : *row_it) {
-            if (edge.distance.has_value()) {  // только существующие рёбра
+            if (edge.distance.has_value()) { 
                 result.push_back(edge);
             }
         }
@@ -268,7 +263,7 @@ public:
     
     size_t degree(const Vertex& v) const {
         if (!has_vertex(v)) {
-            return 0;  // или бросить исключение
+            return 0;  
         }
 
         size_t idx = get_index(v);
@@ -290,32 +285,25 @@ public:
         
         Vertex start = vertex_order.front();
         
-        // 1. Из start достижимы все?
         auto from_start = bfs(start);
         if (from_start.size() != order()) return false;
         
-        // 2. В start достижимы из всех? (кто может достичь start)
-        auto to_start = bfs_reverse(start);  // обход на обратных рёбрах
+        auto to_start = bfs_reverse(start);  
         return to_start.size() == order();
     }    
     
-    //поиск кратчайшего пути 
     std::vector<Edge> shortest_path(const Vertex& from, const Vertex& to) const {
-        // 1. Проверка существования вершин
         if (!has_vertex(from) || !has_vertex(to)) {
-            return {};  // или бросить исключение
+            return {};  
         }
-
         if (from == to) {
-            return {};  // путь из вершины в саму себя — пустой
+            return {};  
         }
 
-        // 2. Инициализация
-        std::unordered_map<Vertex, Distance> dist;      // кратчайшее расстояние
-        std::unordered_map<Vertex, Vertex> previous;    // предыдущая вершина в пути
-        std::unordered_set<Vertex> unvisited;           // непосещённые вершины
+        std::unordered_map<Vertex, Distance> dist;      
+        std::unordered_map<Vertex, Vertex> previous;    
+        std::unordered_set<Vertex> unvisited;           
 
-        // Устанавливаем бесконечность для всех вершин
         const Distance INF = std::numeric_limits<Distance>::max();
         for (const auto& v : vertex_order) {
             dist[v] = INF;
@@ -323,27 +311,22 @@ public:
         }
         dist[from] = 0;
 
-        // 3. Основной цикл Дейкстры
         while (!unvisited.empty()) {
-            // Находим вершину с минимальным расстоянием среди непосещённых
             Vertex current = *std::min_element(unvisited.begin(), unvisited.end(),
                 [&](const Vertex& a, const Vertex& b) {
                     return dist[a] < dist[b];
                 });
             
-            // Если минимальное расстояние — бесконечность, остальные недостижимы
             if (dist[current] == INF) {
                 break;
             }
 
-            // Если достигли целевой вершины, можно остановиться
             if (current == to) {
                 break;
             }
 
             unvisited.erase(current);
 
-            // Релаксация всех соседей
             for (const auto& edge : edges(current)) {
                 if (!edge.distance.has_value()) continue;
 
@@ -358,9 +341,8 @@ public:
             }
         }
 
-        // 4. Восстановление пути
         if (dist[to] == INF) {
-            return {};  // путь не существует
+            return {};  
         }
 
         std::vector<Edge> path;
@@ -368,7 +350,6 @@ public:
 
         while (current != from) {
             Vertex prev = previous[current];
-            // Находим ребро из prev в current с правильным весом
             for (const auto& edge : edges(prev)) {
                 if (edge.to == current && edge.distance.has_value()) {
                     path.push_back(edge);
@@ -378,17 +359,13 @@ public:
             current = prev;
         }
 
-        // Путь получился от to к from, разворачиваем
         std::reverse(path.begin(), path.end());
 
         return path;
     } 
-    //обход 
     std::vector<Vertex>  walk(const Vertex& start_vertex, std::function<void(const Vertex&)> action)const{    
-        // Получаем порядок обхода через BFS
         std::vector<Vertex> order = bfs(start_vertex);
         
-        // Применяем action к каждой вершине в порядке обхода
         for (const auto& vertex : order) {
             action(vertex);
         }
@@ -402,7 +379,6 @@ public:
             return;
         }
 
-        // Создаём HTML файл с визуализацией
         std::ofstream html("graph_viz.html");
 
         html << R"(
@@ -563,7 +539,6 @@ public:
             var nodes = new vis.DataSet([
     )";
 
-        // Добавляем вершины
         int id = 0;
         std::unordered_map<Vertex, int> node_ids;
         for (const auto& v : vertex_order) {
@@ -581,7 +556,6 @@ public:
             var edges = new vis.DataSet([
     )";
 
-        // Добавляем рёбра
         for (const auto& from : vertex_order) {
             for (const auto& edge : edges(from)) {
                 if (edge.distance.has_value()) {
@@ -644,7 +618,6 @@ public:
 
         html.close();
 
-        // Открываем в браузере
     #ifdef _WIN32
         system("start graph_viz.html");
     #elif __APPLE__

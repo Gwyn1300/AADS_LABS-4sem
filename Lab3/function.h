@@ -9,31 +9,26 @@
 
 template<typename Vertex, typename Distance>
 Vertex store(const Graph<Vertex, Distance>& graph) {
-    // Получаем все вершины графа
     std::vector<Vertex> vertices = graph.vertices();
     
-    // Проверка на пустой граф
     if (vertices.empty()) {
         throw std::runtime_error("Graph is empty. Cannot find warehouse location.");
     }
     
-    // Если в графе одна вершина, она и будет складом
     if (vertices.size() == 1) {
         return vertices[0];
     }
     
-    // Для хранения эксцентриситета каждой вершины
     std::unordered_map<Vertex, Distance> eccentricity;
     const Distance INF = std::numeric_limits<Distance>::max();
     
-    // Для каждой вершины вычисляем максимальное расстояние до других
     for (const auto& source : vertices) {
         Distance max_dist = 0;
         bool has_paths = false;
         
         for (const auto& target : vertices) {
             if (source == target) continue;
-            
+           
             // Находим кратчайший путь
             auto path = graph.shortest_path(source, target);
             
@@ -49,7 +44,6 @@ Vertex store(const Graph<Vertex, Distance>& graph) {
             }
         }
         
-        // Если вершина не связана с другими (недостижима), пропускаем её
         if (!has_paths) {
             eccentricity[source] = INF;
         } else {
@@ -57,7 +51,6 @@ Vertex store(const Graph<Vertex, Distance>& graph) {
         }
     }
     
-    // Находим вершину с минимальным эксцентриситетом
     Vertex best = vertices[0];
     Distance min_eccentricity = eccentricity[best];
     

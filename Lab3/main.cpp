@@ -10,7 +10,6 @@ int main() {
     std::cout << "|         GRAPH DEMONSTRATION (10 VERTICES)        |\n";
     std::cout << "+--------------------------------------------------+\n";
 
-    // Create a graph with string vertices
     Graph<std::string, double> graph;
 
     std::cout << "\n1. ADDING 10 VERTICES:\n";
@@ -32,8 +31,6 @@ int main() {
     std::cout << "\n3. ADDING EDGES (randomized distances):\n";
     std::cout << "   Adding edges between cities with random distances (100-5000 km):\n";
     
-    // Добавляем рёбра для создания связного графа
-    // Основные связи (чтобы граф был связным)
     graph.add_edge("Moscow", "SaintP", 712.0);
     graph.add_edge("Moscow", "Kazan", 815.0);
     graph.add_edge("Moscow", "Novosibirsk", 3357.0);
@@ -55,7 +52,6 @@ int main() {
     graph.add_edge("Rostov", "Moscow", 1086.0);
     graph.add_edge("Rostov", "Samara", 1050.0);
     
-    // Дополнительные связи для большей связности
     graph.add_edge("Moscow", "Rostov", 1086.0);
     graph.add_edge("SaintP", "Nizhny", 796.0);
     graph.add_edge("Kazan", "Nizhny", 392.0);
@@ -173,7 +169,6 @@ int main() {
         auto best = store(graph);
         std::cout << "   Best warehouse location: " << best << "\n";
         
-        // Дополнительная информация о расстояниях от склада
         std::cout << "\n   Distances from " << best << ":\n";
         auto vertices_list = graph.vertices();
         for (const auto& v : vertices_list) {
